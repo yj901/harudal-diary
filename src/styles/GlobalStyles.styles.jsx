@@ -48,6 +48,18 @@ const GlobalStyles = createGlobalStyle`
     background: none;
   }
 
+  .drag-prevent {
+    -ms-user-select: none;
+    -moz-user-select: -moz-none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    user-select: none;
+  }
+
+  .inner {
+    padding: 20px;
+  }
+
   :root {
     --bg: #2D3145;
     --light: #fff;
