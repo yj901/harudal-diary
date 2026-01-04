@@ -58,6 +58,9 @@ const GlobalStyles = createGlobalStyle`
 
   .inner {
     padding: 20px;
+    @media (max-width: 450px) {
+      padding: 12px;
+    }
   }
 
   :root {
@@ -73,10 +76,11 @@ const GlobalStyles = createGlobalStyle`
     --moonshadow: rgba(10, 10, 29, 0.8);
     --box: #353A50;
     --modal: #2F334C;
-    --cancel: ##434867;
+    --cancel: #434867;
     --delete: #EF4444;
     --shadow: 4px 4px 12px 0px rgba(0, 0, 0, 0.20);
     --shadow2: 4px 4px 20px 0px rgba(0, 0, 0, 0.20);
+    --line: #615F84
   }
 `;
 

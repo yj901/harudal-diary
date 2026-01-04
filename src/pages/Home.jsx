@@ -3,7 +3,9 @@ import CalendarArea from "../components/CalendarArea";
 import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-const Container = styled.section``;
+const Container = styled.section`
+  width: 100%;
+`;
 
 const EditBtn = styled.div`
   width: 54px;
