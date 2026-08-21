@@ -1,6 +1,8 @@
-import { useState } from "react";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import EmotionMoon from "../components/EmotionMoon";
+import { useEntryStore } from "../store/useEntryStore";
 
 const Container = styled.section`
   width: 100%;
@@ -62,10 +64,10 @@ const EmotionItem = styled.li`
       ? $emotionId === "happy"
         ? "rgba(254, 225, 132, 0.2)"
         : $emotionId === "sad"
-        ? "rgba(131, 178, 255, 0.2)"
-        : $emotionId === "angry"
-        ? "rgba(255, 135, 135, 0.2)"
-        : "rgba(243, 244, 246, 0.2)"
+          ? "rgba(131, 178, 255, 0.2)"
+          : $emotionId === "angry"
+            ? "rgba(255, 135, 135, 0.2)"
+            : "rgba(243, 244, 246, 0.2)"
       : "transparent"};
   p {
     font-size: 1.3rem;
@@ -97,10 +99,10 @@ const IntensityItem = styled.li`
       ? $emotionId === "happy"
         ? "rgba(254, 225, 132, 0.2)"
         : $emotionId === "sad"
-        ? "rgba(131, 178, 255, 0.2)"
-        : $emotionId === "angry"
-        ? "rgba(255, 135, 135, 0.2)"
-        : "rgba(243, 244, 246, 0.2)"
+          ? "rgba(131, 178, 255, 0.2)"
+          : $emotionId === "angry"
+            ? "rgba(255, 135, 135, 0.2)"
+            : "rgba(243, 244, 246, 0.2)"
       : "transparent"};
   p {
     font-size: 1.3rem;
@@ -116,10 +118,10 @@ const Circle = styled.div`
     $color === "happy"
       ? `var(--happy)`
       : $color === "sad"
-      ? `var(--sad)`
-      : $color === "angry"
-      ? `var(--angry)`
-      : `var(--calm)`};
+        ? `var(--sad)`
+        : $color === "angry"
+          ? `var(--angry)`
+          : `var(--calm)`};
 `;
 
 const TextArea = styled.textarea`
@@ -169,12 +171,49 @@ const TextArea = styled.textarea`
 `;
 
 const Editor = () => {
-  const [selectedEmotion, setSelectedEmotion] = useState(null);
-  const [selectedIntensity, setSelectedIntensity] = useState(null);
-  const [content, setContent] = useState("");
+  const { id } = useParams();
+  const isHydrated = useEntryStore((state) => state.isHydrated);
+  const draft = useEntryStore((state) => state.draft);
+  const setDraft = useEntryStore((state) => state.setDraft);
+  const initWriteDraft = useEntryStore((state) => state.initWriteDraft);
+  const initEditDraft = useEntryStore((state) => state.initEditDraft);
+  const draftEntryId = useEntryStore((state) => state.draftEntryId);
+  const entry = useEntryStore((state) =>
+    id
+      ? state.entries.find((item) => String(item.id) === String(id))
+      : null,
+  );
+
+  const isDraftForThis = id
+    ? String(draftEntryId) === String(id)
+    : draftEntryId === "write";
+
+  const selectedEmotion = isDraftForThis
+    ? draft.emotion
+    : (entry?.emotion ?? null);
+  const selectedIntensity = isDraftForThis
+    ? draft.intensity
+    : entry
+      ? entry.intensity === null
+        ? 4
+        : entry.intensity
+      : null;
+  const content = isDraftForThis ? draft.text : (entry?.text ?? "");
+
+  useEffect(() => {
+    if (!isHydrated) return;
+    if (id) {
+      initEditDraft(id);
+      return;
+    }
+    const current = useEntryStore.getState().draft;
+    if (!current.date) {
+      initWriteDraft();
+    }
+  }, [id, isHydrated, initEditDraft, initWriteDraft]);
 
   const emotions = [
-    { id: "happy", label: "긍정", color: "happy" },
+    { id: "happy", label: "기쁨", color: "happy" },
     { id: "sad", label: "슬픔", color: "sad" },
     { id: "angry", label: "화남", color: "angry" },
     { id: "calm", label: "평온", color: "calm" },
@@ -197,7 +236,7 @@ const Editor = () => {
             {emotions.map((emotion) => (
               <EmotionItem
                 key={emotion.id}
-                onClick={() => setSelectedEmotion(emotion.id)}
+                onClick={() => setDraft({ emotion: emotion.id })}
                 $isSelected={selectedEmotion === emotion.id}
                 $emotionId={emotion.id}
               >
@@ -216,7 +255,7 @@ const Editor = () => {
             {intensities.map((intensity) => (
               <IntensityItem
                 key={intensity.id}
-                onClick={() => setSelectedIntensity(intensity.id)}
+                onClick={() => setDraft({ intensity: intensity.id })}
                 $isSelected={selectedIntensity === intensity.id}
                 $emotionId={selectedEmotion || "calm"}
               >
@@ -244,7 +283,7 @@ const Editor = () => {
         <TextArea
           placeholder="오늘 하루 있었던 일들을 자유롭게 적어보세요."
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={(e) => setDraft({ text: e.target.value })}
         />
       </Block>
     </Container>

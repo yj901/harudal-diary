@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import EmotionMoon from "../components/EmotionMoon";
+import { useEntryStore } from "../store/useEntryStore";
+import { sortEntriesNewest } from "../data/entryUtils";
 
 const Container = styled.section`
   width: 100%;
@@ -48,10 +51,10 @@ const CircleIcon = styled.div`
     $color === "happy"
       ? `var(--happy)`
       : $color === "sad"
-      ? `var(--sad)`
-      : $color === "angry"
-      ? `var(--angry)`
-      : `var(--calm)`};
+        ? `var(--sad)`
+        : $color === "angry"
+          ? `var(--angry)`
+          : `var(--calm)`};
 `;
 
 const DateInfo = styled.div`
@@ -91,117 +94,52 @@ const List = styled.ul`
   margin: 0;
 `;
 
+const EmptyText = styled.p`
+  margin-top: 80px;
+  text-align: center;
+  font-size: 1.4rem;
+  color: var(--stext);
+  opacity: 0.6;
+`;
+
 const Lists = () => {
-  // 목업 데이터
-  const mockEntries = [
-    {
-      id: 1,
-      date: "2025.5.9",
-      day: "금요일",
-      emotion: "happy",
-      intensity: null, // 원형 아이콘
-      text: "ui 작업 시작함~~~",
-    },
-    {
-      id: 2,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "calm",
-      intensity: 1, // 초승달
-      text: "오늘은 좀 덜 졸림",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-    {
-      id: 3,
-      date: "2025.5.13",
-      day: "화요일",
-      emotion: "sad",
-      intensity: 2, // 반달
-      text: "이것은 목업 일기입니다. 달의 차오르는 모양과 감정의 컬러를 합친 감정일기장을 만들고자 UI작업을 진행하고 있습니다.",
-    },
-  ];
+  const navigate = useNavigate();
+  const entries = useEntryStore((state) => state.entries);
+  const list = sortEntriesNewest(entries);
 
   return (
     <Container className="inner">
-      <List>
-        {mockEntries.map((entry) => (
-          <ListItem key={entry.id}>
-            <TopRow>
-              <IconWrapper>
-                {entry.intensity === null ? (
-                  <CircleIcon $color={entry.emotion} />
-                ) : (
-                  <EmotionMoon
-                    emotion={entry.emotion}
-                    intensity={entry.intensity}
-                    width={32}
-                  />
-                )}
-              </IconWrapper>
-              <DateInfo>
-                <DateText>{entry.date}</DateText>
-                <DayText>{entry.day}</DayText>
-              </DateInfo>
-            </TopRow>
-            <EntryText>{entry.text}</EntryText>
-          </ListItem>
-        ))}
-      </List>
+      {list.length === 0 ? (
+        <EmptyText>아직 작성한 일기가 없습니다.</EmptyText>
+      ) : (
+        <List>
+          {list.map((entry) => (
+            <ListItem
+              key={entry.id}
+              onClick={() => navigate(`/view/${entry.id}`)}
+            >
+              <TopRow>
+                <IconWrapper>
+                  {entry.intensity === null ? (
+                    <CircleIcon $color={entry.emotion} />
+                  ) : (
+                    <EmotionMoon
+                      emotion={entry.emotion}
+                      intensity={entry.intensity}
+                      width={32}
+                    />
+                  )}
+                </IconWrapper>
+                <DateInfo>
+                  <DateText>{entry.date}</DateText>
+                  <DayText>{entry.day}</DayText>
+                </DateInfo>
+              </TopRow>
+              <EntryText>{entry.text}</EntryText>
+            </ListItem>
+          ))}
+        </List>
+      )}
     </Container>
   );
 };

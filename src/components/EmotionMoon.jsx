@@ -4,6 +4,11 @@ const Svg = styled.svg`
   position: relative;
 `;
 
+const MoonCircle = styled.circle`
+  fill: ${({ $color }) => $color};
+  transition: fill 0.3s ease-in-out;
+`;
+
 const emotionColors = {
   happy: "#FEE184",
   sad: "#83B2FF",
@@ -25,7 +30,7 @@ const EmotionMoon = ({ emotion, intensity, width }) => {
 
   return (
     <Svg width={width} height={width} viewBox="0 0 30 30">
-      <circle cx="15" cy="15" r="15" fill={emotionColor} />
+      <MoonCircle cx="15" cy="15" r="15" $color={emotionColor} />
       {shadowPath && (
         <path
           d={shadowPath}
