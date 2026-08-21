@@ -2,7 +2,11 @@
 
 하루를 비추는 감정의 달력. 오늘의 감정을 달의 모양과 색으로 남기는 개인용 감정 일기장입니다.
 
-글은 서버가 아니라 **브라우저 IndexedDB**에 저장됩니다. 계정이 없고, 이 기기에서만 볼 수 있습니다.
+**바로 쓰기:** https://harudal-diary.pages.dev/
+
+계정이 없고, 글은 서버가 아니라 **이 기기의 브라우저**에 저장됩니다. 다른 폰·다른 브라우저에서는 보이지 않습니다.
+
+브라우저 메뉴에서 홈 화면에 추가하면 앱처럼 쓸 수 있습니다.
 
 ## 기능
 
@@ -13,29 +17,9 @@
 - JSON 백업 · 불러오기, 읽기용 txt 내보내기
 - 홈 화면에 설치할 수 있는 PWA
 
-## 실행
-
-Node.js가 필요합니다.
-
-```bash
-npm install
-npm run dev
-```
-
-브라우저에서 `http://localhost:5173` 으로 열립니다.
-
-| 명령           | 설명      |
-| -------------- | --------- |
-| `npm run dev`  | 개발 서버 |
-| `npm run lint` | ESLint    |
-
-## 기술
-
-React 19, Vite, styled-components, React Router, Zustand, Framer Motion, IndexedDB, vite-plugin-pwa
-
 ## 데이터
 
-일기는 이 브라우저의 IndexedDB(`harudal-diary`)에 남습니다. 새로고침하거나 창을 닫아도 글은 유지됩니다. 달 아이콘 안의 **백업**으로 JSON을 받아 두면 더 안전합니다.
+일기는 이 브라우저의 IndexedDB(`harudal-diary`)에 남습니다. 새로고침하거나 창을 닫아도 글은 유지됩니다. 기기나 브라우저를 바꾸면 비어 있으니, 달 아이콘 안의 **백업**으로 JSON을 받아 두는 것을 권합니다.
 
 - **백업** — JSON 파일로 저장
 - **불러오기** — 백업 JSON으로 복원 (기존 글을 덮어씀)
@@ -50,3 +34,7 @@ React 19, Vite, styled-components, React Router, Zustand, Framer Motion, Indexed
 | `/view/:id` | 글 보기 |
 | `/write`    | 새 글   |
 | `/edit/:id` | 수정    |
+
+## 기술
+
+React 19, Vite, styled-components, React Router, Zustand, Framer Motion, IndexedDB, Cloudflare Pages
