@@ -1,7 +1,8 @@
+import { useId } from "react";
 import styled from "styled-components";
 
 const Svg = styled.svg`
-  position: relative;
+  overflow: hidden;
 `;
 
 const MoonCircle = styled.circle`
@@ -27,18 +28,25 @@ const moonShadowPaths = [
 const EmotionMoon = ({ emotion, intensity, width }) => {
   const emotionColor = emotionColors[emotion]; // 노랑, 파랑 등
   const shadowPath = moonShadowPaths[intensity]; // 0~4단계 그림자
+  const clipId = `moon-clip-${useId().replace(/:/g, "")}`;
 
   return (
     <Svg width={width} height={width} viewBox="0 0 30 30">
-      <MoonCircle cx="15" cy="15" r="15" $color={emotionColor} />
-      {shadowPath && (
-        <path
-          d={shadowPath}
-          fill="rgba(10, 10, 29, 0.80)"
-          transform="scale(1.02)"
-          transform-origin="center"
-        />
-      )}
+      <defs>
+        <clipPath id={clipId}>
+          <circle cx="15" cy="15" r="15" />
+        </clipPath>
+      </defs>
+      <g clipPath={`url(#${clipId})`}>
+        <MoonCircle cx="15" cy="15" r="15" $color={emotionColor} />
+        {shadowPath && (
+          <path
+            d={shadowPath}
+            fill="rgba(10, 10, 29, 0.80)"
+            transform="translate(15 15) scale(1.02) translate(-15 -15)"
+          />
+        )}
+      </g>
     </Svg>
   );
 };
