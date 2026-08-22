@@ -67,6 +67,7 @@ const BodyText = styled.p`
   color: var(--stext);
   line-height: 2.4rem;
   word-break: break-word;
+  white-space: pre-wrap;
 `;
 
 const EmptyText = styled.p`
